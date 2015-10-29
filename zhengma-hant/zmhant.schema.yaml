@@ -1,0 +1,145 @@
+# Rime schema settings
+# encoding: utf-8
+
+schema:
+  schema_id: zmhant
+  name: 鄭碼-正體優先
+  version: "0.4"
+  author:
+    - 發明人 鄭易里教授
+    - 方案製作 不知路人 Rayson
+  description:
+    超大字集鄭碼
+  dependencies:
+    - pinyin_simp
+
+switches:
+  - name: ascii_mode
+    reset: 0
+    states: [ 中文, 西文 ]
+  - name: full_shape
+    states: [ 半角, 全角 ]
+  - name: extended_charset
+    states: [ 常用, 增廣 ]
+    reset: 1
+  - name: zh_simp
+    states: [ 漢字, 汉字 ]
+
+engine:
+  processors:
+    - ascii_composer
+    - recognizer
+    - key_binder
+    - speller
+    - punctuator
+    - selector
+    - navigator
+    - express_editor
+  segmentors:
+    - ascii_segmentor
+    - matcher
+    - affix_segmentor@pinyin
+    - abc_segmentor
+    - punct_segmentor
+    - fallback_segmentor
+  translators:
+    - punct_translator
+    - table_translator@custom_phrase
+    - table_translator
+    - script_translator@pinyin
+  filters:
+    - simplifier@tradition
+    - uniquifier
+    - reverse_lookup_filter@zhengma_lookup
+
+speller:
+  alphabet: zyxwvutsrqponmlkjihgfedcba
+  delimiter: " '"
+  max_code_length: 4
+## 最大碼長
+  auto_select: true
+## 自動選擇
+
+translator:
+  dictionary: &dict
+    zmhant
+  enable_charset_filter: true
+  enable_user_dict: false
+## 使用者字典（記錄動態字詞頻及習慣等），開啟 true，關閉 false
+  enable_sentence: false
+#  enable_encoder: true
+#  encode_commit_history: true
+#  max_phrase_length: 5
+#  preedit_format:
+#    - xform/^([a-z]*)$/$1〔\U$1\E〕/
+#    - "xlit|ABCDEFGHIJKLMNOPQRSTUVWXYZ|一土王扌艹木石匚虫口日目丿亻八金月鱼言疒忄氵辶𠃍阝纟|"
+#  comment_format:
+#    - "xlit|abcdefghijklmnopqrstuvwxyz~|一土王扌艹木石匚虫口日目丿亻八金月鱼言疒忄氵辶𠃍阝纟～|"
+#  initial_quality: 0.75
+## 調整編譯器出字的優先度
+
+custom_phrase:
+## 詞典名為空，不加載固態詞典
+  dictionary: ""
+## 對應的檔是使用者資料夾/zmhant_custom_phrase.txt
+  user_dict: zmhant_custom_phrase
+  db_class: stabledb
+  enable_sentence: false
+#  initial_quality: 0.75
+
+#abc_segmentor:
+#  extra_tags:
+#    - pinyin
+## 開啟拼音混輸
+
+pinyin:
+  tag: pinyin
+  dictionary: pinyin_simp
+  prefix: "`"
+  suffix: ";"
+  tips: 【拼音】
+  preedit_format:
+    - xform/([nl])v/$1ü/
+    - xform/([nl])ue/$1üe/
+    - xform/([jqxy])v/$1u/
+  closing_tips: 【鄭碼】
+#  initial_quality: 0.2
+
+tradition:
+  opencc_config: zht2zhs.ini
+  option_name: zh_simp
+  tags: [ abc ]
+  tips: all
+
+zhengma_lookup:
+  tags: [ abc, pinyin ]
+  dictionary: *dict
+  overwrite_comment: false
+  comment_format:
+    - "xform/$/」/"
+    - "xform/^/「/"
+
+punctuator:
+  import_preset: default
+
+key_binder:
+  import_preset: default
+  bindings:
+    - { when: always, accept: Contral+Shift+4, toggle: extended_charset }
+    - { when: always, accept: Contral+Shift+5, toggle: zh_simp }
+    - { when: always, accept: Contral+Shift+dollar, toggle: extended_charset }
+    - { when: always, accept: Contral+Shift+percent, toggle: zh_simp }
+
+recognizer:
+  import_preset: default
+  patterns:
+    punct: "^/[0-9]*[a-z]*$"
+    pinyin: "`[a-z']*;?$"
+
+menu:
+  page_size: 7
+## 候選項數
+
+style:
+  horizontal: false
+## 豎排false，横排true
