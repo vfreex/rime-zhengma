@@ -3,11 +3,13 @@ patch:
   schema_list:
   - schema: zmhans
   - schema: zmhant
-  - schema: luna_pinyin          # 朙月拼音
-  - schema: luna_pinyin_simp     # 朙月拼音 简化字模式
-  - schema: luna_pinyin_tw       # 朙月拼音 臺灣正體模式
-  - schema: terra_pinyin         # 地球拼音 dì qiú pīn yīn
-  - schema: ipa_xsampa    # X-SAMPA 國際音標
-  - schema: emoji         # emoji表情
+  - schema: luna_pinyin
+  - schema: luna_pinyin_simp
+  - schema: luna_pinyin_fluency
+  - schema: bopomofo
+  - schema: bopomofo_tw
+  - schema: cangjie5
+  - schema: stroke
+  - schema: terra_pinyin
 
 
